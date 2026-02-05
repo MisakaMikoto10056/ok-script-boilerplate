@@ -123,6 +123,7 @@ jobs:
           
           echo "prev_tag=$PREV_TAG" >> $env:GITHUB_OUTPUT
           echo "current_tag=$CURRENT_TAG" >> $env:GITHUB_OUTPUT
+        shell: bash
 
       # 9. 打包为 EXE
       - name: Build Executable
