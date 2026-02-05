@@ -149,40 +149,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # 发布设置
-          draft: false  # 直接发布，不保存为草稿
-          prerelease: false  # 正式版本
-          generate_release_notes: true  # 自动生成发布说明
-          
-          # 自定义发布说明
-          body: |
-            ## 🎉 版本 ${{ github.ref_name }}
-            
-            ### 📋 更新内容
-            ${{ steps.changelog.outputs.changes }}
-            
-            ### ⬇️ 下载说明
-            1. 下载下方的 `MyApp.exe` 文件
-            2. 双击运行即可使用
-            
-            ### 📦 构建信息
-            - 构建时间: ${{ fromJSON(steps.changelog.outputs.current_tag) }}
-            - Python 版本: ${{ matrix.python-version }}
-            - 操作系统: Windows
-            
-            ---
-            
-            *由 GitHub Actions 自动构建发布*
-          
-          # 包含的文件
-          files: |
-            dist/MyApp.exe  # PyInstaller 生成的可执行文件
-            README.md       # 说明文档
-            LICENSE         # 许可证文件
-          
-          # 标签设置
           tag_name: ${{ github.ref_name }}
           name: "版本 ${{ github.ref_name }}"
+          generate_release_notes: true  # GitHub 自动生成
+          draft: false
+          prerelease: false
+          files: |
+            dist/*.exe
 
       # 11. 上传构建产物（备用，如果 Release 步骤失败）
       - name: Upload Artifacts (Backup)
