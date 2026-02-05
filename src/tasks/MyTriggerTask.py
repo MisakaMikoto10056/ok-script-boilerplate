@@ -12,6 +12,7 @@ class MyTriggerTask(TriggerTask):
     def run(self):
         self.trigger_count += 1
         self.log_debug(f'MyTriggerTask run {self.trigger_count}')
+        #print("张航")
 
 
 
