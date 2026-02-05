@@ -186,7 +186,7 @@ jobs:
       # 11. 上传构建产物（备用，如果 Release 步骤失败）
       - name: Upload Artifacts (Backup)
         if: always()  # 无论前面步骤成功与否都执行
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: |
