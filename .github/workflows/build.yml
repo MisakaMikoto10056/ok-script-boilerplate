@@ -19,6 +19,16 @@ jobs:
         python-version: [ 3.12 ]
 
     steps:
+      - name: Clean runner
+        run: |
+          [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+          # 清理可能的缓存目录
+          @("pyappify_dist", "build", "dist", "__pycache__", ".pytest_cache") | ForEach-Object {
+            if (Test-Path $_) { Remove-Item -Recurse -Force $_ }
+          }
+          Get-ChildItem -Recurse -Filter "*.pyc" -ErrorAction SilentlyContinue | Remove-Item -Force
+          Get-ChildItem -Recurse -Filter "*.pyo" -ErrorAction SilentlyContinue | Remove-Item -Force
+
       - name: Configure git
         run: |
           [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -58,16 +68,16 @@ jobs:
       #         python -m unittest $_.FullName
       #     }
 
-      - name: Sync Repositories # 同步部分代码(deploy.txt中), 合并tag中间更新日志, 到更新库, 以减少用户更新使用的git库大小
-        id: sync   # Give the step an ID to access its outputs
-        uses: ok-oldking/partial-sync-repo@master
-        with:
-          repos: |
-            https://${{ secrets.OK_GH }}@github.com/ok-oldking/ok-boilerplate-update.git
-          sync_list: 'deploy.txt'
-          tag: ${{ github.ref_name }}
-          gitignore_file: '.update_repo_gitignore'
-          show_author: true #在更新日志中加入作者
+      # - name: Sync Repositories # 同步部分代码(deploy.txt中), 合并tag中间更新日志, 到更新库, 以减少用户更新使用的git库大小
+      #   id: sync   # Give the step an ID to access its outputs
+      #   uses: ok-oldking/partial-sync-repo@master
+      #   with:
+      #     repos: |
+      #       https://${{ secrets.OK_GH }}@github.com/ok-oldking/ok-boilerplate-update.git
+      #     sync_list: 'deploy.txt'
+      #     tag: ${{ github.ref_name }}
+      #     gitignore_file: '.update_repo_gitignore'
+      #     show_author: true #在更新日志中加入作者
 
       - name: Build with PyAppify Action
         id: build-app
@@ -83,4 +93,3 @@ jobs:
                           ${{ steps.sync.outputs.changes_with_asterisk }}
             ### 下载Release-setup.exe, 下载后可应用内更新
           files: pyappify_dist/*
-
